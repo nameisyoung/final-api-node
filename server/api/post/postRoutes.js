@@ -4,6 +4,11 @@ var Model = require('./postModel');
 
 // setup boilerplate route jsut to satisfy a request
 // for building
+
+router.param('id', function(req, res) {
+	res.send(Model.find());
+});
+
 router.route('/')
   .get(function(req, res){
     throw new Error();
