@@ -1,6 +1,9 @@
 var router = require('express').Router();
 var Model = require('./categoryModel');
 
+router.param('id', function(req, res) {
+	res.send(Model.find());
+});
 
 // setup boilerplate route jsut to satisfy a request
 // for building
