@@ -5,50 +5,61 @@ var Model = require('./postModel');
 // setup boilerplate route jsut to satisfy a request
 // for building
 
-router.param('id', function(req, res) {
-	res.send(Model.find());
-});
+// router.param('id', function(req, res) {
+// 	res.send(Model.find());
+// });
 
 router.route('/')
-  .get(function(req, res){
-    throw new Error();
-      Model.find(function(err, models){
-	  if(err){
-	      res.send(err);
-	  }
-	  res.json(models);
-      });
-   })
+  .get(function(req, res) {
+      Model.find({})
+					 .population({
+						 path: 'categories',
+						 model: 'category',
+						 select: 'name'
+					 })
+					 .population('author')
+					 .exec(function (err, models) {
+						 if (err) res.send(err);
+
+						 res.json(models);
+					 })
+	})
   .post(function(req, res){
-      Model.create({
-	  title: req.body.title,
-    text: req.body.text,
-    author: req.body.author,
-    
-      });
+			var newPost = new Model(req.body);
+      newPost.save(function(err) {
+				if (err) res.send(err);
+
+				res.send('Post created');
+			}
   });
 
 router.route('/:post_id')
-  .get(function(req, res){
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
+.get(function(req, res){
+	Model.findById(req.params.post_id)
+		.population({
+			path: 'categories',
+			model: 'category',
+			select: 'name'
+		})
+		.population('author')
+		.exec(function (err, models) {
+			if (err) res.send(err);
+
+			res.json(models);
+		})
+})
+.delete(function(req, res) {
+	Model.findByIdAndRemove({_id: req.params.post_id}, function(err, model){
+		if (err) res.send(err);
+
+		res.send('Post deleted');
 	}
-	res.json(models.find({post:post_id});
-  })
-  .delete(function(req, res) {
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
+.put(function(req, res) {
+	Model.findOnedAndUpdate({_id: req.params.user_id}, {$set: req.body}, function(err, model){
+		if (err) res.send(err);
+
+		res.json(model);
 	}
-	res.json(models.remove({post:post_id});
-  })
-  .put(function(req, res) {
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
-	}
-	res.json(models.findOneAndUpdate({post:post_id}, update, option, callback);)
-  });
+});
 
 module.exports = router;

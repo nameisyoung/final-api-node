@@ -25,7 +25,7 @@ router.route('/')
 			})
   .post(function(req, res){
 			var newUser = new Model(req.body);
-      Model.save(function(err) {
+      newUser.save(function(err) {
 				if (err) res.send(err);
 
 				res.send('User created');

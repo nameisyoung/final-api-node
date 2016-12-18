@@ -13,14 +13,15 @@ var PostSchema = new Schema({
     required: true
   },
   // reference to the user who created this post
-  author: 
+  author:
         {type: Schema.Types.ObjectId,
          ref: 'user',
          required:true
         },
-  category:
-  {type:Schema.Types.ObjectId,
-   ref:'category',
+  category: {
+    type:Schema.Types.ObjectId,
+    ref:'category',
+    required: true
   }
 
 });

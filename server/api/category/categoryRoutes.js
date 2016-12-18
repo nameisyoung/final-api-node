@@ -5,47 +5,41 @@ router.param('id', function(req, res) {
 	res.send(Model.find());
 });
 
-// setup boilerplate route jsut to satisfy a request
-// for building
 router.route('/')
-  .get(function(req, res){
-    throw new Error();
-      Model.find(function(err, models){
-	  if(err){
-	      res.send(err);
-	  }
-	  res.json(models);
-      });
-   })
+  .get(function(req, res) {
+      Model.find({}, function(err, models) {
+				if (err) res.send(err);
+
+				res.json(models);
+			})
   .post(function(req, res){
-      Model.create({
-	  categories: req.body
-      });
+			var newCategory = new Model(req.body);
+      newUser.save(function(err) {
+				if (err) res.send(err);
+
+				res.send('Category created');
+			}
   });
 
 router.route('/:category_id')
-  .get(function(req, res){
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
-	}
-	res.json(models.find({post:category_id});
-  })
-  .delete(function(req, res) {
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
-	}
-	res.json(models.remove({category:category_id});
-  })
-  .put(function(req, res) {
-    Model.find(function(err, models){
-	if(err){
-	    res.send(err);
-	}
-	res.json(models.findOneAndUpdate({category:category_id}, update, option, callback);)
-  });
+.get(function(req, res){
+	Model.find({name: req.params.category_id}, function(err, model){
+		if (err) res.send(err);
 
-module.exports = router;
+		res.json(model);
+	}
+.delete(function(req, res) {
+	Model.findOneAndRemove({name: req.params.category_id}, function(err, model){
+		if (err) res.send(err);
+
+		res.send('Category deleted');
+	}
+.put(function(req, res) {
+	Model.findOnedAndUpdate({name: req.params.category_id}, {$set: req.body}, function(err, model){
+		if (err) res.send(err);
+
+		res.json(model);
+	}
+});
 
 module.exports = router;
